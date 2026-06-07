@@ -23,12 +23,14 @@
       --navy-500: #1E3D96;
       --gold:     #C49A3C;
       --gold-lt:  #E0B96A;
+      --gold-dim: rgba(196,154,60,0.12);
       --white:    #FFFFFF;
       --off:      #F4F6FB;
       --muted:    #8A9EC4;
       --border:   rgba(255,255,255,0.10);
       --ff-serif: 'Playfair Display', Georgia, serif;
       --ff-sans:  'DM Sans', system-ui, sans-serif;
+      --glass:    rgba(255,255,255,0.04);
     }
 
     html { scroll-behavior: smooth; }
@@ -38,6 +40,15 @@
       color: var(--navy-800);
       background: var(--white);
       -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── REDUCED MOTION ── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
     }
 
     /* ── TYPOGRAPHY ── */
@@ -52,6 +63,20 @@
       font-weight: 600;
       letter-spacing: 0.14em;
       text-transform: uppercase;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
     }
 
     /* ── NAV ── */
@@ -74,15 +99,16 @@
     .nav-cta {
       font-size: 0.82rem;
       font-weight: 600;
-      color: var(--navy-900);
+      color: var(--navy-950);
       background: var(--gold);
       padding: 0.55rem 1.4rem;
       border-radius: 4px;
       text-decoration: none;
       letter-spacing: 0.02em;
-      transition: background 0.2s;
+      transition: background 0.2s, transform 0.15s;
+      cursor: pointer;
     }
-    .nav-cta:hover { background: var(--gold-lt); }
+    .nav-cta:hover { background: var(--gold-lt); transform: translateY(-1px); }
 
     /* ── HERO ── */
     .hero {
@@ -109,7 +135,6 @@
       padding-right: 2rem;
     }
 
-    /* ── HERO SLIDESHOW ── */
     .hero-slideshow {
       position: absolute;
       top: 0; right: 0; bottom: 0;
@@ -129,7 +154,6 @@
       opacity: 1;
       transform: scale(1);
     }
-    /* Blend the left edge of the slideshow into the navy background */
     .hero-slide-overlay {
       position: absolute; inset: 0;
       pointer-events: none;
@@ -144,7 +168,7 @@
       z-index: 4;
       display: flex; align-items: center; gap: 0.9rem;
     }
-    .hero-slide-flag { font-size: 1.9rem; line-height: 1; }
+    .hero-slide-flag { display: none; }
     .hero-slide-city {
       font-family: var(--ff-serif);
       font-size: 1.15rem;
@@ -270,24 +294,34 @@
     }
 
     .pain-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1px;
-      background: #DDE2EE;
-      border: 1px solid #DDE2EE;
-      border-radius: 8px;
-      overflow: hidden;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
       margin-bottom: 3rem;
     }
     .pain-item {
       background: var(--white);
+      border: 1px solid #DDE2EE;
+      border-radius: 8px;
       padding: 1.8rem;
       display: flex; gap: 1rem; align-items: flex-start;
+      flex: 1 1 300px;
+      max-width: 352px;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
     }
-    .pain-icon {
+    .pain-item:hover {
+      border-color: #C9D3E8;
+      box-shadow: 0 8px 24px rgba(11,27,69,0.06);
+      transform: translateY(-2px);
+    }
+    .pain-number {
+      font-family: var(--ff-serif);
       font-size: 1.1rem;
       min-width: 28px;
       padding-top: 2px;
+      color: #E53E3E;
+      font-weight: 600;
     }
     .pain-text {
       font-size: 0.95rem;
@@ -357,9 +391,13 @@
       border-radius: 8px;
       padding: 1.8rem;
     }
-    .solucao-card-icon {
-      font-size: 1.4rem;
+    .solucao-card-number {
+      font-family: var(--ff-serif);
+      font-size: 2rem;
+      color: var(--gold);
+      font-weight: 600;
       margin-bottom: 1rem;
+      line-height: 1;
     }
     .solucao-card-title {
       font-size: 0.9rem;
@@ -427,7 +465,21 @@
       display: flex; gap: 1.5rem; align-items: flex-start;
       max-width: 720px;
     }
-    .cred-mission-icon { font-size: 1.6rem; }
+    .cred-mission-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(196,154,60,0.15);
+      border: 1px solid rgba(196,154,60,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-family: var(--ff-serif);
+      font-size: 1.2rem;
+      color: var(--gold);
+      font-weight: 600;
+    }
     .cred-mission p {
       font-size: 1.05rem;
       color: rgba(255,255,255,0.8);
@@ -457,14 +509,16 @@
       transition: background 0.2s;
     }
     .check-item:hover { background: rgba(255,255,255,0.07); }
-    .check-mark {
-      width: 26px; height: 26px;
+    .check-number {
+      width: 28px; height: 28px;
       border-radius: 50%;
       background: rgba(196,154,60,0.15);
       border: 1px solid rgba(196,154,60,0.4);
       color: var(--gold-lt);
       display: flex; align-items: center; justify-content: center;
+      font-family: var(--ff-serif);
       font-size: 0.75rem;
+      font-weight: 600;
       flex-shrink: 0;
       margin-top: 1px;
     }
@@ -615,7 +669,13 @@
       text-align: center;
       max-width: 760px;
     }
-    .form-success-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    .form-success-icon {
+      font-family: var(--ff-serif);
+      font-size: 2.5rem;
+      color: var(--gold);
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
     .form-success h3 {
       font-family: var(--ff-serif);
       font-size: 1.6rem;
@@ -645,7 +705,6 @@
 
     /* ── RESPONSIVE ── */
     @media (max-width: 1000px) {
-      /* Slideshow becomes a full-bleed background behind the text */
       .hero-slideshow { width: 100%; }
       .hero-slide-overlay {
         background:
@@ -682,10 +741,10 @@
 const { useState, useEffect } = React;
 
 const heroSlides = [
-  { src: "funil-assets/hero-newyork.jpg",   city: "Nova York", flag: "🇺🇸", sub: "Estados Unidos" },
-  { src: "funil-assets/hero-london.jpg",    city: "Londres",   flag: "🇬🇧", sub: "Reino Unido" },
-  { src: "funil-assets/hero-paris.jpg",     city: "Paris",     flag: "🇫🇷", sub: "França" },
-  { src: "funil-assets/hero-barcelona.jpg", city: "Barcelona", flag: "🇪🇸", sub: "Espanha" },
+  { src: "funil-assets/hero-newyork.jpg",   city: "Nova York", sub: "Estados Unidos" },
+  { src: "funil-assets/hero-london.jpg",    city: "Londres",   sub: "Reino Unido" },
+  { src: "funil-assets/hero-paris.jpg",     city: "Paris",     sub: "França" },
+  { src: "funil-assets/hero-barcelona.jpg", city: "Barcelona", sub: "Espanha" },
 ];
 
 function HeroSlideshow() {
@@ -705,7 +764,6 @@ function HeroSlideshow() {
       ))}
       <div className="hero-slide-overlay"></div>
       <div className="hero-slide-caption">
-        <span className="hero-slide-flag">{heroSlides[i].flag}</span>
         <div>
           <div className="hero-slide-city">{heroSlides[i].city}</div>
           <div className="hero-slide-sub overline">{heroSlides[i].sub}</div>
@@ -785,7 +843,7 @@ function LeadForm() {
   if (submitted) {
     return (
       <div className="form-success">
-        <div className="form-success-icon">✦</div>
+        <div className="form-success-icon">G</div>
         <h3>Recebemos suas informações!</h3>
         <p>Nossa equipe entrará em contato em breve pelo WhatsApp<br />para entender seu cenário e apresentar o próximo passo.</p>
       </div>
@@ -918,14 +976,14 @@ function App() {
           </p>
           <div className="pain-grid">
             {[
-              ["❌", "Agências gringas cobram", "USD 20–50 mil só de setup"],
-              ["❌", "Tradução profissional manual custa", "R$ 80–150 por minuto de vídeo"],
-              ["❌", "Contratar dublador nativo custa", "USD 200–500 por hora"],
-              ["❌", "Montar time de vendas internacional", "parece impossível"],
-              ["❌", "Você não tem tempo nem expertise", "para fazer sozinho"],
-            ].map(([icon, text, price], i) => (
+              ["01", "Agências gringas cobram", "USD 20–50 mil só de setup"],
+              ["02", "Tradução profissional manual custa", "R$ 80–150 por minuto de vídeo"],
+              ["03", "Contratar dublador nativo custa", "USD 200–500 por hora"],
+              ["04", "Montar time de vendas internacional", "parece impossível"],
+              ["05", "Você não tem tempo nem expertise", "para fazer sozinho"],
+            ].map(([num, text, price], i) => (
               <div key={i} className="pain-item">
-                <span className="pain-icon">{icon}</span>
+                <span className="pain-number">{num}</span>
                 <p className="pain-text">{text} — <span className="pain-price">{price}</span></p>
               </div>
             ))}
@@ -959,13 +1017,13 @@ function App() {
           </div>
           <div className="solucao-cards">
             {[
-              ["🎙️", "Dublagem com clonagem de voz", "Seu áudio no idioma escolhido, com a sua própria voz adaptada."],
-              ["🌐", "Páginas localizadas", "Landing pages criadas e otimizadas para o mercado-alvo."],
-              ["📣", "Tráfego pago gerenciado", "Campanhas rodando no exterior do zero ao scale."],
-              ["⚡", "Setup em 30 dias", "Operação completa no ar em até um mês."],
-            ].map(([icon, title, desc], i) => (
+              ["01", "Dublagem com clonagem de voz", "Seu áudio no idioma escolhido, com a sua própria voz adaptada."],
+              ["02", "Páginas localizadas", "Landing pages criadas e otimizadas para o mercado-alvo."],
+              ["03", "Tráfego pago gerenciado", "Campanhas rodando no exterior do zero ao scale."],
+              ["04", "Setup em 30 dias", "Operação completa no ar em até um mês."],
+            ].map(([num, title, desc], i) => (
               <div key={i} className="solucao-card">
-                <div className="solucao-card-icon">{icon}</div>
+                <div className="solucao-card-number">{num}</div>
                 <div className="solucao-card-title">{title}</div>
                 <div className="solucao-card-desc">{desc}</div>
               </div>
@@ -999,7 +1057,7 @@ function App() {
             com custo brasileiro e uma equipe que entende o mercado de infoprodutos."
           </p>
           <div className="cred-mission">
-            <div className="cred-mission-icon">🎯</div>
+            <div className="cred-mission-icon">G</div>
             <p>
               Nossa missão é simples: <strong>te ajudar a faturar em dólar e euro</strong> sem
               precisar virar especialista em marketing internacional.
@@ -1015,13 +1073,13 @@ function App() {
           <h2 className="display">Esse serviço foi feito para você se:</h2>
           <div className="check-list">
             {[
-              ["Você tem um infoproduto gravado", "e já vendendo no Brasil."],
-              ["Quer ganhar em dólar ou euro", "sem montar uma operação do zero."],
-              ["Entende que sua autoridade não tem fronteiras", "e quer firmá-la internacionalmente."],
-              ["Está pronto para escalar", "para onde a moeda é mais forte."],
-            ].map(([strong, rest], i) => (
+              ["1", "Você tem um infoproduto gravado", "e já vendendo no Brasil."],
+              ["2", "Quer ganhar em dólar ou euro", "sem montar uma operação do zero."],
+              ["3", "Entende que sua autoridade não tem fronteiras", "e quer firmá-la internacionalmente."],
+              ["4", "Está pronto para escalar", "para onde a moeda é mais forte."],
+            ].map(([num, strong, rest], i) => (
               <div key={i} className="check-item">
-                <div className="check-mark">✓</div>
+                <div className="check-number">{num}</div>
                 <p className="check-text"><strong>{strong}</strong> {rest}</p>
               </div>
             ))}
