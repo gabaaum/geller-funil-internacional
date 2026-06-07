@@ -308,12 +308,24 @@
       display: flex; gap: 1rem; align-items: flex-start;
       flex: 1 1 300px;
       max-width: 352px;
-      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+      /* estado inicial (oculto) para a animacao de entrada no scroll */
+      opacity: 0;
+      transform: translateY(26px);
+      transition: opacity 0.55s ease, transform 0.55s ease,
+                  border-color 0.2s, box-shadow 0.2s;
     }
-    .pain-item:hover {
+    .pain-item.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .pain-item.show:hover {
       border-color: #C9D3E8;
       box-shadow: 0 8px 24px rgba(11,27,69,0.06);
       transform: translateY(-2px);
+    }
+    /* fallback: sem animacao, cards sempre visiveis */
+    @media (prefers-reduced-motion: reduce) {
+      .pain-item { opacity: 1; transform: none; }
     }
     .pain-number {
       font-family: var(--ff-serif);
@@ -806,6 +818,52 @@ const faqData = [
   }
 ];
 
+const painItems = [
+  ["01", "Agências gringas cobram", "USD 20–50 mil só de setup"],
+  ["02", "Tradução profissional manual custa", "R$ 80–150 por minuto de vídeo"],
+  ["03", "Contratar dublador nativo custa", "USD 200–500 por hora"],
+  ["04", "Montar time de vendas internacional", "parece impossível"],
+  ["05", "Você não tem tempo nem expertise", "para fazer sozinho"],
+];
+
+function PainGrid() {
+  const ref = React.useRef(null);
+  const [shown, setShown] = useState(() => painItems.map(() => false));
+
+  useEffect(() => {
+    const el = ref.current;
+    // fallback: sem IntersectionObserver, mostra tudo
+    if (!el || typeof IntersectionObserver === 'undefined') {
+      setShown(painItems.map(() => true));
+      return;
+    }
+    const timers = [];
+    const obs = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        painItems.forEach((_, i) => {
+          timers.push(setTimeout(() => {
+            setShown(prev => { const n = [...prev]; n[i] = true; return n; });
+          }, i * 120));
+        });
+        obs.disconnect();
+      }
+    }, { threshold: 0.18 });
+    obs.observe(el);
+    return () => { obs.disconnect(); timers.forEach(clearTimeout); };
+  }, []);
+
+  return (
+    <div className="pain-grid" ref={ref}>
+      {painItems.map(([num, text, price], i) => (
+        <div key={i} className={`pain-item${shown[i] ? ' show' : ''}`}>
+          <span className="pain-number">{num}</span>
+          <p className="pain-text">{text} — <span className="pain-price">{price}</span></p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function FaqItem({ item }) {
   const [open, setOpen] = useState(false);
   return (
@@ -974,20 +1032,7 @@ function App() {
             <strong>330 milhões de consumidores</strong>, paga em dólar e valoriza
             exatamente o tipo de conteúdo que você já produz — só que a 3 a 5× mais.
           </p>
-          <div className="pain-grid">
-            {[
-              ["01", "Agências gringas cobram", "USD 20–50 mil só de setup"],
-              ["02", "Tradução profissional manual custa", "R$ 80–150 por minuto de vídeo"],
-              ["03", "Contratar dublador nativo custa", "USD 200–500 por hora"],
-              ["04", "Montar time de vendas internacional", "parece impossível"],
-              ["05", "Você não tem tempo nem expertise", "para fazer sozinho"],
-            ].map(([num, text, price], i) => (
-              <div key={i} className="pain-item">
-                <span className="pain-number">{num}</span>
-                <p className="pain-text">{text} — <span className="pain-price">{price}</span></p>
-              </div>
-            ))}
-          </div>
+          <PainGrid />
           <div className="resultado-box">
             <p>
               E o pior: você já ouviu histórias de quem investiu{" "}
