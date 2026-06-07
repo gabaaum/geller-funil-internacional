@@ -402,6 +402,22 @@
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 1.8rem;
+      /* estado inicial (oculto) para a animacao de entrada no scroll */
+      opacity: 0;
+      transform: translateY(26px);
+      transition: opacity 0.55s ease, transform 0.55s ease,
+                  border-color 0.2s, background 0.2s;
+    }
+    .solucao-card.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .solucao-card.show:hover {
+      border-color: rgba(196,154,60,0.35);
+      background: rgba(255,255,255,0.06);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .solucao-card { opacity: 1; transform: none; }
     }
     .solucao-card-number {
       font-family: var(--ff-serif);
@@ -826,38 +842,64 @@ const painItems = [
   ["05", "Você não tem tempo nem expertise", "para fazer sozinho"],
 ];
 
-function PainGrid() {
+// Hook: revela `count` elementos em cascata quando o container entra na viewport
+function useStaggerReveal(count, step = 120) {
   const ref = React.useRef(null);
-  const [shown, setShown] = useState(() => painItems.map(() => false));
-
+  const [shown, setShown] = useState(() => Array(count).fill(false));
   useEffect(() => {
     const el = ref.current;
     // fallback: sem IntersectionObserver, mostra tudo
     if (!el || typeof IntersectionObserver === 'undefined') {
-      setShown(painItems.map(() => true));
+      setShown(Array(count).fill(true));
       return;
     }
     const timers = [];
     const obs = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
-        painItems.forEach((_, i) => {
+        for (let i = 0; i < count; i++) {
           timers.push(setTimeout(() => {
             setShown(prev => { const n = [...prev]; n[i] = true; return n; });
-          }, i * 120));
-        });
+          }, i * step));
+        }
         obs.disconnect();
       }
     }, { threshold: 0.18 });
     obs.observe(el);
     return () => { obs.disconnect(); timers.forEach(clearTimeout); };
   }, []);
+  return [ref, shown];
+}
 
+function PainGrid() {
+  const [ref, shown] = useStaggerReveal(painItems.length);
   return (
     <div className="pain-grid" ref={ref}>
       {painItems.map(([num, text, price], i) => (
         <div key={i} className={`pain-item${shown[i] ? ' show' : ''}`}>
           <span className="pain-number">{num}</span>
           <p className="pain-text">{text} — <span className="pain-price">{price}</span></p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+const solucaoCards = [
+  ["01", "Dublagem com clonagem de voz", "Seu áudio no idioma escolhido, com a sua própria voz adaptada."],
+  ["02", "Páginas localizadas", "Landing pages criadas e otimizadas para o mercado-alvo."],
+  ["03", "Tráfego pago gerenciado", "Campanhas rodando no exterior do zero ao scale."],
+  ["04", "Setup em 30 dias", "Operação completa no ar em até um mês."],
+];
+
+function SolucaoCards() {
+  const [ref, shown] = useStaggerReveal(solucaoCards.length);
+  return (
+    <div className="solucao-cards" ref={ref}>
+      {solucaoCards.map(([num, title, desc], i) => (
+        <div key={i} className={`solucao-card${shown[i] ? ' show' : ''}`}>
+          <div className="solucao-card-number">{num}</div>
+          <div className="solucao-card-title">{title}</div>
+          <div className="solucao-card-desc">{desc}</div>
         </div>
       ))}
     </div>
@@ -1060,20 +1102,7 @@ function App() {
           <div className="solucao-quote">
             <p>"Sua voz. Seu produto. Sua autoridade.<br /><em>Faturando em moeda forte.</em>"</p>
           </div>
-          <div className="solucao-cards">
-            {[
-              ["01", "Dublagem com clonagem de voz", "Seu áudio no idioma escolhido, com a sua própria voz adaptada."],
-              ["02", "Páginas localizadas", "Landing pages criadas e otimizadas para o mercado-alvo."],
-              ["03", "Tráfego pago gerenciado", "Campanhas rodando no exterior do zero ao scale."],
-              ["04", "Setup em 30 dias", "Operação completa no ar em até um mês."],
-            ].map(([num, title, desc], i) => (
-              <div key={i} className="solucao-card">
-                <div className="solucao-card-number">{num}</div>
-                <div className="solucao-card-title">{title}</div>
-                <div className="solucao-card-desc">{desc}</div>
-              </div>
-            ))}
-          </div>
+          <SolucaoCards />
         </div>
       </section>
 
