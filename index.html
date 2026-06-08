@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Expansão Internacional — Geller Group</title>
+  <title>Expansão Internacional | Geller Group</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -745,7 +745,15 @@
     @media (max-width: 600px) {
       section { padding: 72px 5%; }
       .hero { padding: 100px 5% 64px; }
-      .hero-stats { flex-direction: column; gap: 1.5rem; }
+      /* hero centralizado no mobile */
+      .hero-inner { text-align: center; margin: 0 auto; }
+      .hero-badge { margin-left: auto; margin-right: auto; }
+      .hero h1 { margin-left: auto; margin-right: auto; }
+      .hero-sub { margin-left: auto; margin-right: auto; text-align: center; }
+      .hero-stats {
+        flex-direction: column; gap: 1.5rem;
+        align-items: center; text-align: center;
+      }
       .form-grid { grid-template-columns: 1fr; }
       .form-group.full { grid-column: 1; }
       .cred-header { flex-direction: column; }
@@ -814,19 +822,19 @@ function HeroSlideshow() {
 const faqData = [
   {
     q: "Funciona para qualquer nicho?",
-    a: "Sim. Estruturamos a operação para qualquer tipo de infoproduto — saúde, negócios, educação, desenvolvimento pessoal, entre outros. O que importa é que o produto já esteja validado no Brasil."
+    a: "Sim. Estruturamos a operação para qualquer tipo de infoproduto, saúde, negócios, educação, desenvolvimento pessoal, entre outros. O que importa é que o produto já esteja validado no Brasil."
   },
   {
     q: "Preciso ter as aulas gravadas antes de começar?",
-    a: "Sim. Você entrega as aulas já gravadas e editadas. Cuidamos de todo o resto — tradução, dublagem com clonagem de voz, criação de páginas e gestão do tráfego."
+    a: "Sim. Você entrega as aulas já gravadas e editadas. Cuidamos de todo o resto."
   },
   {
     q: "A dublagem vai soar artificial?",
-    a: "Não. Usamos clonagem de voz: o áudio dublado é gerado com a sua própria voz adaptada para o idioma escolhido. Sua identidade e autoridade são preservadas."
+    a: "Não. Usamos clonagem de voz, o áudio dublado é gerado com a sua própria voz adaptada para o idioma escolhido. Sua identidade é preservada."
   },
   {
     q: "Preciso de equipe de vendas internacional?",
-    a: "Não. O modelo é venda direta pela página. A landing page localizada, combinada com o tráfego pago, é responsável pela conversão — sem precisar montar um time."
+    a: "Não. O modelo é venda direta pela página. A landing page localizada, combinada com o tráfego pago, é responsável pela conversão."
   },
   {
     q: "Em quanto tempo começo a vender internacionalmente?",
@@ -835,9 +843,9 @@ const faqData = [
 ];
 
 const painItems = [
-  ["01", "Agências gringas cobram", "USD 20–50 mil só de setup"],
-  ["02", "Tradução profissional manual custa", "R$ 80–150 por minuto de vídeo"],
-  ["03", "Contratar dublador nativo custa", "USD 200–500 por hora"],
+  ["01", "Agências gringas cobram", "USD 20 a 50 mil só de setup"],
+  ["02", "Tradução profissional manual custa", "R$ 80 a 150 por minuto de vídeo"],
+  ["03", "Contratar dublador nativo custa", "USD 200 a 500 por hora"],
   ["04", "Montar time de vendas internacional", "parece impossível"],
   ["05", "Você não tem tempo nem expertise", "para fazer sozinho"],
 ];
@@ -877,7 +885,7 @@ function PainGrid() {
       {painItems.map(([num, text, price], i) => (
         <div key={i} className={`pain-item${shown[i] ? ' show' : ''}`}>
           <span className="pain-number">{num}</span>
-          <p className="pain-text">{text} — <span className="pain-price">{price}</span></p>
+          <p className="pain-text">{text} <span className="pain-price">{price}</span></p>
         </div>
       ))}
     </div>
@@ -1006,8 +1014,8 @@ function LeadForm() {
             <option value="">Selecione o faturamento</option>
             <option>Ainda não vendi</option>
             <option>Até R$ 10k</option>
-            <option>R$ 10k – R$ 50k</option>
-            <option>R$ 50k – R$ 200k</option>
+            <option>R$ 10k a R$ 50k</option>
+            <option>R$ 50k a R$ 200k</option>
             <option>Acima de R$ 200k</option>
           </select>
         </div>
@@ -1038,7 +1046,7 @@ function App() {
           </h1>
           <p className="hero-sub">
             Estruturamos toda a operação para você vender seu infoproduto em{" "}
-            <strong>mercados de moeda forte</strong> — do zero ao tráfego rodando —
+            <strong>mercados de moeda forte</strong>, do zero ao tráfego rodando,
             sem precisar aprender outro idioma ou montar um time internacional.
           </p>
           <a href="#formulario" className="btn-primary">
@@ -1050,7 +1058,7 @@ function App() {
               <div className="hero-stat-label">até seu produto no ar<br />no mercado-alvo</div>
             </div>
             <div>
-              <div className="hero-stat-num">3–5×</div>
+              <div className="hero-stat-num">3 a 5×</div>
               <div className="hero-stat-label">mais receita em<br />moeda forte</div>
             </div>
             <div>
@@ -1068,17 +1076,23 @@ function App() {
           <h2 className="display">
             Você já validou seu infoproduto no Brasil.<br />Mas percebeu que…
           </h2>
-          <p className="problema-intro">
+          <p className="problema-intro" style={{ marginBottom: '1.4rem' }}>
             O mercado brasileiro está cada vez mais saturado. A concorrência aumenta,
-            as margens diminuem e o real desvaloriza. O mercado americano tem{" "}
-            <strong>330 milhões de consumidores</strong>, paga em dólar e valoriza
-            exatamente o tipo de conteúdo que você já produz — só que a 3 a 5× mais.
+            as margens diminuem e o real desvaloriza.
+          </p>
+          <p className="problema-intro" style={{ marginBottom: '1.4rem' }}>
+            Você sabe que internacionalizar é o próximo passo lógico. O mercado americano tem{" "}
+            <strong>330 milhões de consumidores</strong>, paga em dólar e valoriza o mesmo
+            tipo de conteúdo que você já produz só que a 3 a 5x mais.
+          </p>
+          <p className="problema-intro">
+            Mas quando você pesquisa como fazer isso, descobre que:
           </p>
           <PainGrid />
           <div className="resultado-box">
             <p>
               E o pior: você já ouviu histórias de quem investiu{" "}
-              <strong>R$ 50–100 mil</strong>, fez tudo errado e queimou dinheiro
+              <strong>R$ 50 a 100 mil</strong>, fez tudo errado e queimou dinheiro
               sem vender 1 dólar. Resultado? Você continua preso no mercado brasileiro
               enquanto <strong>seus concorrentes menos qualificados já faturam em moeda forte.</strong>
             </p>
@@ -1096,7 +1110,7 @@ function App() {
           <p className="solucao-body">
             Criamos uma operação completa de expansão internacional para infoprodutores
             que já têm produto validado. Usamos <strong>tecnologia de IA de ponta</strong> para
-            adaptar todo o seu conteúdo ao mercado-alvo e gerenciamos tudo do início ao fim —
+            adaptar todo o seu conteúdo ao mercado-alvo e gerenciamos tudo do início ao fim,
             em outro idioma, em outro mercado.
           </p>
           <div className="solucao-quote">
@@ -1109,7 +1123,7 @@ function App() {
       {/* CREDIBILIDADE */}
       <section className="credibilidade">
         <div className="section-inner">
-          <p className="overline section-label dark">Quem está por trás</p>
+          <p className="overline section-label dark">Quem está por trás dessa solução</p>
           <div className="cred-header">
             <h2 className="display">Geller Group —<br />Estratégia Digital e Coprodução</h2>
             <div className="cred-badge">
@@ -1124,11 +1138,12 @@ function App() {
           </p>
           <p className="cred-body">
             Mas vimos também muitos desperdiçarem fortunas contratando agências gringas caras
-            ou tentando fazer sozinhos sem a expertise necessária.
+            ou tentando fazer sozinhos sem expertise.
           </p>
           <p className="cred-sub">
-            "Por isso combinamos IA de ponta, dublagem com clonagem de voz e criação de criativos —
-            com custo brasileiro e uma equipe que entende o mercado de infoprodutos."
+            Por isso criamos esta solução: combinar tecnologia de IA de ponta, tradução,
+            dublagem com clonagem de voz e criação de criativos com custo brasileiro e uma
+            equipe que já entende o mercado de infoprodutos.
           </p>
           <div className="cred-mission">
             <div className="cred-mission-icon">G</div>
@@ -1149,7 +1164,7 @@ function App() {
             {[
               ["1", "Você tem um infoproduto gravado", "e já vendendo no Brasil."],
               ["2", "Quer ganhar em dólar ou euro", "sem montar uma operação do zero."],
-              ["3", "Entende que sua autoridade não tem fronteiras", "e quer firmá-la internacionalmente."],
+              ["3", "Entende que sua autoridade não tem fronteiras", "e quer firmar a sua internacionalmente."],
               ["4", "Está pronto para escalar", "para onde a moeda é mais forte."],
             ].map(([num, strong, rest], i) => (
               <div key={i} className="check-item">
@@ -1164,8 +1179,8 @@ function App() {
       {/* FAQ */}
       <section className="faq">
         <div className="section-inner">
-          <p className="overline section-label dark">Perguntas frequentes</p>
-          <h2 className="display">Tire suas dúvidas</h2>
+          <p className="overline section-label dark">FAQ</p>
+          <h2 className="display">Perguntas frequentes</h2>
           <div className="faq-list">
             {faqData.map((item, i) => <FaqItem key={i} item={item} />)}
           </div>
