@@ -939,13 +939,29 @@ function LeadForm() {
   });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const set = (k, v) => setForm(f => ({...f, [k]: v}));
 
-  const handleSubmit = (e) => {
+  const WEBHOOK_URL = 'https://stack-n8n.bykrzl.easypanel.host/webhook/funil-internacional';
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => { setLoading(false); setSubmitted(true); }, 900);
+    setError('');
+    try {
+      const res = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) throw new Error('Falha no envio (' + res.status + ')');
+      setSubmitted(true);
+    } catch (err) {
+      setError('Não foi possível enviar agora. Tente novamente em instantes.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (submitted) {
@@ -1020,6 +1036,11 @@ function LeadForm() {
           </select>
         </div>
         <div className="form-submit-row">
+          {error && (
+            <p style={{ color: '#E0805A', fontSize: '0.85rem', marginBottom: '0.8rem', textAlign: 'center' }}>
+              {error}
+            </p>
+          )}
           <button type="submit" className="btn-submit" disabled={loading}>
             {loading ? 'Enviando…' : (<>Quero saber como funciona <span className="btn-arrow">→</span></>)}
           </button>
